@@ -2,7 +2,8 @@ const WebSocket = require('ws');
 
 async function subscribeOrderBook(instrumentName, duration = 60000, callback) {
     return new Promise((resolve, reject) => {
-        const ws = new WebSocket('wss://test.deribit.com/ws/api/v2');
+        // Changed to live Deribit WebSocket endpoint
+        const ws = new WebSocket('wss://www.deribit.com/ws/api/v2');
 
         const msg = {
             "jsonrpc": "2.0",
@@ -16,7 +17,7 @@ async function subscribeOrderBook(instrumentName, duration = 60000, callback) {
         let timer;
 
         ws.on('open', function open() {
-            console.log('Connected to Deribit API');
+            console.log('Connected to Deribit Live API');
             ws.send(JSON.stringify(msg));
 
             timer = setTimeout(() => {
@@ -40,7 +41,7 @@ async function subscribeOrderBook(instrumentName, duration = 60000, callback) {
         });
 
         ws.on('close', function close() {
-            console.log('Disconnected from Deribit API');
+            console.log('Disconnected from Deribit Live API');
             clearTimeout(timer);
             resolve();
         });
@@ -63,9 +64,9 @@ function unsubscribe(ws, instrumentName) {
 
 async function getOrderBookData(instrument = "BTC-PERPETUAL", duration = 60000, callback) {
     try {
-        console.log(`Starting data collection for ${duration / 1000} seconds...`);
+        console.log(`Starting live data collection for ${duration / 1000} seconds...`);
         await subscribeOrderBook(instrument, duration, callback);
-        console.log("Data collection completed.");
+        console.log("Live data collection completed.");
     } catch (error) {
         console.error('Error:', error);
     }
